@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../components/Home.vue'
-import Landing from '../components/Landing.vue'
+import Current from '../components/Current.vue'
+import Devices from '../components/Devices.vue'
+import Locations from '../components/Locations.vue'
 import SignIn from '../components/Signin.vue'
 
 Vue.use(VueRouter)
@@ -13,9 +15,19 @@ const routes = [
     component: Home
   },
   {
-    path: '/landing',
-    name: 'landing',
-    component: Landing
+    path: '/current',
+    name: 'current',
+    component: Current
+  },
+  {
+    path: '/locations',
+    name: 'locations',
+    component: Locations
+  },
+  {
+    path: '/devices',
+    name: 'devices',
+    component: Devices
   },
   {
     path: '/SignIn',

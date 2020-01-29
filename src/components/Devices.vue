@@ -51,6 +51,12 @@
                 <v-list-item-subtitle>{{item.receive_time | date_filt}}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
+                <v-tooltip bottom>
+      <template v-slot:activator="{ on }">
+        <v-btn><v-icon color="primary" dark v-on="on">mdi-map-marker-plus</v-icon></v-btn>
+      </template>
+      <span>Assign Location</span>
+    </v-tooltip>
                 <v-btn icon @click="item.show = !item.show">
                   <v-icon>{{ item.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
                 </v-btn>

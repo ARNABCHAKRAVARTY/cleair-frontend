@@ -125,8 +125,12 @@
             </v-expand-transition>
           </v-card>
         </v-col>
+        
       </v-container>
     </template>
+    <v-btn absolute dark fab bottom right color="pink">
+      <v-icon>mdi-plus</v-icon>
+    </v-btn>
   </v-card>
 </template>
 
@@ -157,8 +161,8 @@ export default {
       width: 1,
       labels_1: ["12am","2am","4am","6am","8am","10am","12pm","2pm","4pm","6pm","8pm","10pm"],
       labels_2: ["Sun","Mon","Tue","Wed","Thurs","Fri","Sat"],
-      labels_3: ["Jan 27","Jan 23","Jan 20","Jan 16","Jan 13","Jan 9","Jan 6","Jan 2"],
-      labels_4: ["Jan 16","Jan 1","Dec 16","Dec 1","Nov 16","Nov 1"],
+      labels_3: ["Jan 2","Jan 6","Jan 9","Jan 13","Jan 16","Jan 20","Jan 23","Jan 27"],
+      labels_4: ["Nov 1","Nov 16","Dec 1","Dec 16","Jan 1","Jan 16",],
       show: false,
       label_select: null,
       label_items: ['Last 24 hours', 'Last 7 days', 'Last 30 days', 'Last 90 days'],

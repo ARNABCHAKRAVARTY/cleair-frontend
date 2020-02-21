@@ -28,29 +28,38 @@
 
                 <v-list-item-title
                   class="headline mb-1"
-                  v-if="dropdown_select.abbr === 'bat_temp'"
-                >Battery Temp: {{item.bat_temp}}°C</v-list-item-title>
+                  v-if="dropdown_select.abbr === 'temperature'"
+                >Temperature: {{item.temperature}}°C</v-list-item-title>
                 <v-list-item-title
                   class="headline mb-1"
-                  v-else-if="dropdown_select.abbr === 'cpu_temp'"
-                >CPU Temp: {{item.cpu_temp}}°C</v-list-item-title>
+                  v-else-if="dropdown_select.abbr === 'pressure'"
+                >Pressure: {{item.pressure}} Pa</v-list-item-title>
                 <v-list-item-title
                   class="headline mb-1"
-                  v-else-if="dropdown_select.abbr === 'vin'"
-                >Voltage IN: {{item.vin}} V</v-list-item-title>
+                  v-else-if="dropdown_select.abbr === 'humidity'"
+                >Humidity: {{item.humidity}} %</v-list-item-title>
                 <v-list-item-title
                   class="headline mb-1"
-                  v-else-if="dropdown_select.abbr === 'vout'"
-                >Voltage OUT: {{item.vout}} V</v-list-item-title>
+                  v-else-if="dropdown_select.abbr === 'pm25'"
+                >PM 2.5: {{item.pm25}} </v-list-item-title>
                 <v-list-item-title
                   class="headline mb-1"
-                  v-else-if="dropdown_select.abbr === 'bat_v'"
-                >Battery Voltage: {{item.bat_v}} V</v-list-item-title>
+                  v-else-if="dropdown_select.abbr === 'pm10'"
+                >PM 10: {{item.pm10}} </v-list-item-title>
 
                 <v-list-item-title right></v-list-item-title>
                 <v-list-item-subtitle>{{item.receive_time | date_filt}}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn @click="assignLocation(item.dev_id)">
+                      <v-icon color="primary" dark v-on="on">mdi-map-marker-plus</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Assign Device</span>
+                </v-tooltip>
+
                 <v-btn icon @click="item.show = !item.show">
                   <v-icon>{{ item.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
                 </v-btn>
@@ -128,16 +137,15 @@
         
       </v-container>
     </template>
-    <v-btn absolute dark fab bottom right color="pink">
-      <v-icon>mdi-plus</v-icon>
-    </v-btn>
+    
   </v-card>
 </template>
 
 <script>
 const axios = require("axios");
 const moment = require("moment");
-const server_host = "http://192.168.100.117:5000/";
+//const server_host = "http://192.168.100.117:5000/";
+const server_host = "http://13.235.245.238:9889/";
 const http = axios.create({
   baseURL: server_host
 });
@@ -166,13 +174,13 @@ export default {
       show: false,
       label_select: null,
       label_items: ['Last 24 hours', 'Last 7 days', 'Last 30 days', 'Last 90 days'],
-      dropdown_select: { state: "Battery Temperature", abbr: "bat_temp" },
+      dropdown_select: { state: "Temperature", abbr: "temperature" },
       dropdown_items: [
-        { state: "Battery Temperature", abbr: "bat_temp" },
-        { state: "CPU Temperature", abbr: "cpu_temp" },
-        { state: "Voltage IN", abbr: "vin" },
-        { state: "Voltage OUT", abbr: "vout" },
-        { state: "Battery Voltage", abbr: "bat_v" }
+        { state: "Temperature", abbr: "temperature" },
+        { state: "Pressure", abbr: "pressure" },
+        { state: "Humidity", abbr: "humidity" },
+        { state: "PM 2.5", abbr: "pm25" },
+        { state: "PM 10", abbr: "pm10" }
       ],
       items: [
         {
@@ -262,7 +270,15 @@ export default {
         arr.push(Math.floor(Math.random() * 15) + 1);
       }
       return arr;
-    }
+    },
+
+    getColor(value) {
+        if (value < 50 ) return 'green'
+        else if (value < 100) return '#E4CF41'
+        else if (value < 150) return 'orange'
+        else if (value < 200) return 'red'
+        else return 'black'
+      },
   },
 
   mounted() {},

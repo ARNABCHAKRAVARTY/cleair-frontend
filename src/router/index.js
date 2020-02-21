@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../components/Home.vue'
-import Current from '../components/Current.vue'
+import CurrentLocations from '../components/CurrentLocations.vue'
+import CurrentDevices from '../components/CurrentDevices.vue'
+import LocationsTable from '../components/LocationsTable.vue'
+import DevicesTable from '../components/DevicesTable.vue'
 import Devices from '../components/Devices.vue'
 import Locations from '../components/Locations.vue'
 import SignIn from '../components/Signin.vue'
@@ -15,9 +18,24 @@ const routes = [
     component: Home
   },
   {
-    path: '/current',
-    name: 'current',
-    component: Current
+    path: '/currentlocations',
+    name: 'currentlocations',
+    component: CurrentLocations
+  },
+  {
+    path: '/locationstable',
+    name: 'locationstable',
+    component: LocationsTable
+  },
+  {
+    path: '/devicestable',
+    name: 'devicestable',
+    component: DevicesTable
+  },
+  {
+    path: '/currentdevices',
+    name: 'currentdevices',
+    component: CurrentDevices
   },
   {
     path: '/locations',

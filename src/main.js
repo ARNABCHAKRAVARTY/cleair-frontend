@@ -9,8 +9,8 @@ import io from 'socket.io-client';
 
 Vue.config.productionTip = false
 
-//const socket = io('http://192.168.1.21:5000');
-const socket = io('http://192.168.100.117:5000');
+const socket = io('http://192.168.1.2:5000');
+//const socket = io('http://13.235.245.238:9889/');
 Vue.use(VueSocketIOExt, socket);
 
 new Vue({

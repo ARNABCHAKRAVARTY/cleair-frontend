@@ -52,6 +52,13 @@
     <v-content>
       <router-view></router-view>
       <!-- <v-container class="fill-height" fluid></v-container> -->
+      <v-snackbar
+        :value="snackbar.show"
+        :color="snackbar.kind"
+        :timeout="3000"
+      >
+      {{ snackbar.message }}
+      </v-snackbar>
     </v-content>
   </v-app>
 </template>
@@ -67,10 +74,15 @@ export default {
     items: [
       { icon: "mdi-home", text: "Home", path: "/" },
       { icon: "mdi-account", text: "Sign In", path: "/SignIn" },
-      { icon: "mdi-poll", text: "Current", path: "/current" },
+      { icon: "mdi-google-maps", text: "Maps", path: "/maps" },
+      { icon: "mdi-chart-areaspline", text: "Current Devices", path: "/currentdevices" },
+      { icon: "mdi-chart-bar", text: "Current Locations", path: "/currentlocations" },
+      { icon: "mdi-table", text: "Devices Table", path: "/devicestable" },
+      { icon: "mdi-table-large", text: "Locations Table", path: "/locationstable" },
       { icon: "mdi-access-point-network", text: "Devices", path: "/devices" },
-      { icon: "mdi-map-marker-radius", text: "Locations", path: "/locations" }
-    ]
+      { icon: "mdi-map-marker-radius", text: "Locations", path: "/locations" },
+    ],
+
   }),
 
   computed: {
@@ -81,6 +93,10 @@ export default {
       } else {
         return this.$store.state.appTitle;
       }
+    },
+
+    snackbar() {
+      return this.$store.state.feedback
     },
 
     appVersion() {

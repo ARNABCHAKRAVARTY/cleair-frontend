@@ -11,7 +11,8 @@
         hide-details
       ></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="table_items" :search="search">
+
+    <v-data-table :headers="headers" :items="current" :search="search">
 
       <template v-slot:item.pm25="{ item }">
         <v-chip width="100px" :color="getColor(item.pm25)" dark>{{ item.pm25 }}</v-chip>
@@ -32,30 +33,21 @@
         <span >{{ item.pressure }} Pa</span>
       </template>
 
-      <template v-slot:item.receive_time="{ item }">
+      <template v-slot:item.received_time="{ item }">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <span v-on="on">{{ item.receive_time | from_now }}</span>
+            <span v-on="on">{{ item.received_time | from_now }}</span>
           </template>
-          <span>{{ item.receive_time | date_filt }}</span>
+          <span>{{ item.received_time | date_filt }}</span>
         </v-tooltip>
       </template>
 
-    <!--  <template slot="table_items" slot-scope="props">
-            <td class="text-xs-right pr-1">{{ props.table_items.dev_id }}</td>
-            <td class="text-xs-left pl-1">{{ props.table_items.pm25 }}</td>
-            <td class="text-xs-left">{{ props.table_items.pm10 }}</td>
-            <td class="text-xs-left">{{ props.table_items.temperature }}</td>
-            <td class="text-xs-left">{{ props.table_items.humidity }}</td>
-            <td class="text-xs-left">{{ props.table_items.pressure }}</td>
-            <td class="text-xs-left">{{ props.table_items.receive_time | date_filt }}</td>
-      </template>
--->
     </v-data-table>
   </v-card>
 </template>
 
 <script>
+const apis = require("@/resources/apis");
 const axios = require("axios");
 const moment = require("moment");
 //const server_host = "http://192.168.1.2:5000/";
@@ -72,84 +64,25 @@ export default {
         {
           text: "Device ID ",
           align: "left",
-          value: "dev_id"
+          value: "device_id"
         },
         { text: "PM 2.5", value: "pm25" },
         { text: "PM 10", value: "pm10" },
         { text: "Temperature", value: "temperature" },
         { text: "Humidity", value: "humidity" },
         { text: "Pressure", value: "pressure" },
-        { text: "Last Update", value: "receive_time" }
+        { text: "Last Update", value: "received_time" }
       ],
-      table_items: [
-        {
-          bat_temp: "18",
-          pm25: "40",
-          humidity: "25",
-          sdt: "15",
-          pm10: "73",
-          cpu_temp: "35",
-          dev_id: "021",
-          receive_time: "2020-01-17 10:48:25.389279+00:00",
-          bat_soc: "5",
-          bat_v: "50",
-          pressure: "54",
-          vout: "68",
-          vin: "73",
-          temperature: "41"
-        },
-        {
-          bat_temp: "55",
-          pm25: "123",
-          humidity: "48",
-          sdt: "15",
-          pm10: "180",
-          cpu_temp: "78",
-          dev_id: "007",
-          receive_time: "2020-01-17 10:48:25.389279+00:00",
-          bat_soc: "5",
-          bat_v: "47",
-          pressure: "85",
-          vout: "37",
-          vin: "33",
-          temperature: "40"
-        },
-        {
-          bat_temp: "39",
-          pm25: "237",
-          humidity: "54",
-          sdt: "15",
-          pm10: "272",
-          cpu_temp: "63",
-          dev_id: "075",
-          receive_time: "2020-01-17 10:48:25.389279+00:00",
-          bat_soc: "5",
-          bat_v: "54",
-          pressure: "20",
-          vout: "38",
-          vin: "5",
-          temperature: "43"
-        },
-        {
-          bat_temp: "45",
-          pm25: "316",
-          humidity: "86",
-          sdt: "15",
-          pm10: "372",
-          cpu_temp: "95",
-          dev_id: "005",
-          receive_time: "2020-01-17 10:48:25.389279+00:00",
-          bat_soc: "5",
-          bat_v: "58",
-          pressure: "28",
-          vout: "32",
-          vin: "25",
-          temperature: "20"
-        }
-      ]
     };
   },
 
+  computed: {
+    current() {
+      return this.$store.getters.current
+    }
+  },
+
+/*
   sockets: {  
     connect() {
       console.log("socket connected");
@@ -178,9 +111,10 @@ export default {
       console.log('STORE_DEVICE:',data)
     }
   },
-
+*/
   methods: {
     get_data() {
+      /*
       let url = "cleair/current/";
       http.get(url).then(
         response => {
@@ -189,7 +123,8 @@ export default {
         error => {
           console.log(error);
         }
-      );
+      ); */
+      this.$store.dispatch('get_current')
     },
 
     getColor (value) {

@@ -26,15 +26,21 @@ export default new Vuex.Store({
     locations: {
       data: [],
       updated: null
+    }, 
+
+    current: {
+      data: [],
+      updated: null
     }
 
   },
 
   mutations: {
+    
     SET_FEEDBACK(state, payload) {
       state.feedback.kind = payload.kind
       state.feedback.message = payload.message
-    },
+    }, 
 
     SHOW_FEEDBACK(state) {
       state.feedback.show = true
@@ -45,7 +51,7 @@ export default new Vuex.Store({
       state.feedback.kind = null
       state.feedback.message = ''
     },
-
+    
     SET_DEVICES(state, payload) {
       state.devices.data = payload
       state.devices.updated = moment()
@@ -54,11 +60,47 @@ export default new Vuex.Store({
     SET_LOCATIONS(state, payload) {
       state.locations.data = payload
       state.locations.updated = moment()
+    },
+
+    SET_CURRENT(state, payload) {
+      let struct_data = {}
+      payload.forEach(data => {
+        struct_data[data.device_id] = data
+      })
+      state.current.data = struct_data
+      state.current.updated = moment()
+    },
+
+    SOCKET_STORE_DATA(state, payload) {
+      console.log('SOCKET (store_data):', payload)
+      state.current.data[payload.device_id] = payload
     }
 
   },
 
   actions: {
+    socket_storeDevice({ dispatch }, payload) {
+      console.log('SOCKET (store_device):', payload)
+      dispatch('get_devices')
+    },
+
+    socket_storeLocation({ dispatch }, payload) {
+      console.log('SOCKET (store_locations):', payload)
+      dispatch('get_locations')
+    },
+
+    get_current({ commit }) {
+      apis.current.get_current().then(
+        response => {
+          console.log('current API call done, committing')
+          commit('SET_CURRENT', response);
+          commit('SET_FEEDBACK', {
+            kind: 'success',
+            message: 'Current Data Loaded'
+          })
+      })
+    },
+    
     get_devices({ commit }) {
       apis.devices.get_devices().then(
         response => {
@@ -79,7 +121,7 @@ export default new Vuex.Store({
         .finally(() => {
           commit('SHOW_FEEDBACK')
         })
-    },
+    }, 
 
     get_locations({ commit }) {
       apis.locations.get_locations().then(
@@ -117,6 +159,10 @@ export default new Vuex.Store({
 
     locations(state) {
       return state.locations.data
+    },
+
+    current(state) {
+      return Object.values(state.current.data)
     }
 
     // GET UNASSIGNED DEVICES

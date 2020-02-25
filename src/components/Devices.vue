@@ -166,10 +166,12 @@
 <script>
 const axios = require("axios");
 const moment = require("moment");
-//const server_host = "http://192.168.100.117:5000/";
-//const http = axios.create({
-//  baseURL: server_host
-//});
+const server_host = "http://13.235.245.238:9889/";
+//const server_host = "http://192.168.1.2:5000/";
+const http = axios.create({
+  baseURL: server_host
+});
+
 const gradients = [
   ["#222"],
   ["#42b3f4"],
@@ -312,6 +314,10 @@ export default {
   computed: {},
 
   methods: {
+    get_data() {
+      
+    },
+
     getGraphValue(n) {
       var arr = [];
       for (var i = 1; i <= n; i++) {

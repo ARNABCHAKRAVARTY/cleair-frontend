@@ -227,7 +227,8 @@ export default {
   computed: {
 
     locations() {
-      return Object.values(this.table_items)
+      //return Object.values(this.table_items)
+      return this.$store.getters.locations
     }
 
   },

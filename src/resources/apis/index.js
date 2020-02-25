@@ -26,5 +26,6 @@ const http_all = axios.create({
 
 import devices from "./devices"
 import locations from "./locations"
+import current from "./current"
 
-export { update_jwt, http_jwt, http_all, devices, locations }
+export { update_jwt, http_jwt, http_all, devices, locations, current }

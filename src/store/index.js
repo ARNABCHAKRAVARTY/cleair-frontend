@@ -75,7 +75,7 @@ export default new Vuex.Store({
     SET_CURRENT(state, payload) {
       let struct_data = {}
       payload.forEach(data => {
-        struct_data[data.device_id] = data
+        struct_data[data.device_idx] = data
       })
       state.current.data = struct_data
       state.current.updated = moment()
@@ -83,7 +83,9 @@ export default new Vuex.Store({
 
     SOCKET_STORE_DATA(state, payload) {
       console.log('SOCKET (store_data):', payload)
-      state.current.data[payload.device_id] = payload
+      Vue.set(state.current.data, payload.idx, payload)
+      //state.current.data[payload.idx] = payload
+      state.current.updated = moment()
     }
 
   },
@@ -111,7 +113,7 @@ export default new Vuex.Store({
       dispatch('get_locations')
     },
 
-    get_prerequisites({ commit }) {
+    get_prerequisites({ state, commit }) {
       apis.prerequisites.get()
         .then(response => {
           console.log('prerequisites API call done, commiting')
@@ -132,16 +134,18 @@ export default new Vuex.Store({
         })
     },
 
-    get_current({ commit }) {
-      apis.current.get_current().then(
-        response => {
-          console.log('current API call done, committing')
-          commit('SET_CURRENT', response);
-          commit('SET_FEEDBACK', {
-            kind: 'success',
-            message: 'Current Data Loaded'
-          })
-      })
+    get_current({ commit, getters }) {
+      if (getters.refresh_current) {
+        apis.current.get_current().then(
+          response => {
+            console.log('current API call done, committing')
+            commit('SET_CURRENT', response);
+            commit('SET_FEEDBACK', {
+              kind: 'success',
+              message: 'Current Data Loaded'
+            })
+        })  
+      }
     },
     
     get_devices({ commit }) {
@@ -208,6 +212,18 @@ export default new Vuex.Store({
 
     current(state) {
       return Object.values(state.current.data)
+    },
+
+    refresh_current(state) {
+      let data_exists = Object.values(state.current.data).length > 0
+      console.log('DATA_EXISTS:', data_exists)
+      if (data_exists) {
+        let data_stale = moment().diff(state.current.updated, 'minutes') > 20
+        console.log('DATA_STALE:', data_stale)
+        return data_stale
+      } else {
+        return !data_exists
+      }
     }
 
     // GET UNASSIGNED DEVICES

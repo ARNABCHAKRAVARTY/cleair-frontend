@@ -11,46 +11,15 @@
         hide-details
       ></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="table_items" :search="search">
-
-      <template v-slot:item.pm25="{ item }">
-        <v-chip width="100px" :color="getColor_25(item.pm25)" dark>{{ item.pm25 }}</v-chip>
-      </template>
-      <template v-slot:item.pm10="{ item }">
-        <v-chip :color="getColor_10(item.pm10)" dark>{{ item.pm10 }}</v-chip>
-      </template>
-
-      <template v-slot:item.temperature="{ item }">
-        <span >{{ item.temperature }} °C</span>
-      </template>
-
-      <template v-slot:item.humidity="{ item }">
-        <span >{{ item.humidity }} %</span>
-      </template>
-
-      <template v-slot:item.pressure="{ item }">
-        <span >{{ item.pressure }} Pa</span>
-      </template>
-
-      <template v-slot:item.receive_time="{ item }">
+    <v-data-table :headers="headers" :items="current" :search="search">
+      <template v-slot:item.received_time="{ item }">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <span v-on="on">{{ item.receive_time | from_now }}</span>
+            <span v-on="on">{{ item.received_time | from_now }}</span>
           </template>
-          <span>{{ item.receive_time | date_filt }}</span>
+          <span>{{ item.received_time | date_filt }}</span>
         </v-tooltip>
       </template>
-
-    <!--  <template slot="table_items" slot-scope="props">
-            <td class="text-xs-right pr-1">{{ props.table_items.dev_id }}</td>
-            <td class="text-xs-left pl-1">{{ props.table_items.pm25 }}</td>
-            <td class="text-xs-left">{{ props.table_items.pm10 }}</td>
-            <td class="text-xs-left">{{ props.table_items.temperature }}</td>
-            <td class="text-xs-left">{{ props.table_items.humidity }}</td>
-            <td class="text-xs-left">{{ props.table_items.pressure }}</td>
-            <td class="text-xs-left">{{ props.table_items.receive_time | date_filt }}</td>
-      </template>
--->
     </v-data-table>
   </v-card>
 </template>
@@ -70,16 +39,16 @@ export default {
       search: "",
       headers: [
         {
-          text: "Device ID ",
+          text: "Device",
           align: "left",
-          value: "dev_id"
+          value: "device_name"
         },
-        { text: "Battery Temperature", value: "bat_temp" },
         { text: "CPU Temperature", value: "cpu_temp" },
         { text: "Battery Voltage", value: "bat_v" },
         { text: "Voltage Out", value: "vout" },
         { text: "Voltage In", value: "vin" },
-        { text: "Last Update", value: "receive_time" }
+        { text: "location", value: "location_name" },
+        { text: "Last Update", value: "received_time" }
       ],
       table_items: [
         {
@@ -150,6 +119,13 @@ export default {
     };
   },
 
+  computed: {
+    current() {
+      return this.$store.getters.current
+    }
+  },
+
+/*
   sockets: {  
     connect() {
       console.log("socket connected");
@@ -174,18 +150,10 @@ export default {
       //console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
     }
   },
-
+*/
   methods: {
     get_data() {
-      let url = "cleair/current/";
-      http.get(url).then(
-        response => {
-          this.table_items = response.data;
-        },
-        error => {
-          console.log(error);
-        }
-      );
+     this.$store.dispatch('get_current')
     },
 
     getColor_25 (value) {

@@ -259,11 +259,17 @@ export default {
     };
   },
 
-  sockets: {},
-
-  computed: {},
+  computed: {
+    prerequisites() {
+      return this.$store.getters.prerequisites
+    }
+  },
 
   methods: {
+    get_data() {
+      this.$store.dispatch('get_prerequisites')
+    },
+
     getGraphValue(n) {
       var arr = [];
       for (var i = 1; i <= n; i++) {
@@ -281,7 +287,9 @@ export default {
       },
   },
 
-  mounted() {},
+  mounted() {
+    this.get_data()
+  },
 
   filters: {
     from_now(date_time) {

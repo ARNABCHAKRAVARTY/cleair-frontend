@@ -18,6 +18,11 @@ export default new Vuex.Store({
       message: ''
     },
 
+    prerequisites: {
+      data: [],
+      updated: null
+    },
+
     devices: {
       data: [],
       updated: null
@@ -52,6 +57,11 @@ export default new Vuex.Store({
       state.feedback.message = ''
     },
     
+    SET_PREREQS(state, payload) {
+      state.prerequisites.data = payload
+      state.prerequisites.updated = moment()
+    },
+
     SET_DEVICES(state, payload) {
       state.devices.data = payload
       state.devices.updated = moment()
@@ -79,6 +89,18 @@ export default new Vuex.Store({
   },
 
   actions: {
+    socket_connect() {
+      console.log('SOCKET CONNECTED')
+    },
+
+    socket_disconnect() {
+      console.log('SOCKET DISCONNECTED')
+    },
+
+    socket_reconnect() {
+      console.log('SOCKET RECONNECTED')
+    },
+
     socket_storeDevice({ dispatch }, payload) {
       console.log('SOCKET (store_device):', payload)
       dispatch('get_devices')
@@ -87,6 +109,27 @@ export default new Vuex.Store({
     socket_storeLocation({ dispatch }, payload) {
       console.log('SOCKET (store_locations):', payload)
       dispatch('get_locations')
+    },
+
+    get_prerequisites({ commit }) {
+      apis.prerequisites.get()
+        .then(response => {
+          console.log('prerequisites API call done, commiting')
+          commit('SET_PREREQS', response)
+          commit('SET_FEEDBACK', {
+            kind: 'success',
+            message: 'Pre-Requisites Loaded'
+          })
+        })
+        .catch(error => {
+          commit('SET_FEEDBACK', {
+            kind: 'error',
+            message: 'ERROR: ' + error
+          })
+        })
+        .finally(() => {
+          commit('SHOW_FEEDBACK')
+        })
     },
 
     get_current({ commit }) {
@@ -144,13 +187,15 @@ export default new Vuex.Store({
           commit('SHOW_FEEDBACK')
         })
     }
-
-
-    // GET PREREQUISITES FROM SERVER
   },
+
   getters: {
     is_logged_in(state) {
       return state.user ? true : false
+    },
+
+    prerequisites(state) {
+      return state.prerequisites.data
     },
 
     devices(state) {

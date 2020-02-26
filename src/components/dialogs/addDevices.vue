@@ -67,5 +67,11 @@ export default {
     data: () => ({
       dialog: false,
     }),
+
+    computed: {
+      prerequisites() {
+        return this.$store.getters.prerequisites
+      }
+    }
 }
 </script>>

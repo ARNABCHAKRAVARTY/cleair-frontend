@@ -5,7 +5,7 @@ let current = {
     endpoint: '/cleair',
   
     get_current: function () {
-      let url = this.endpoint + "/current"
+      let url = this.endpoint + "/current_map"
       return new Promise((resolve, reject) => {
         http_all.get(url)
           .then(

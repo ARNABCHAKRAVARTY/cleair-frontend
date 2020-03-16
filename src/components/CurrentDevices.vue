@@ -122,6 +122,7 @@ export default {
   computed: {
     current() {
       return this.$store.getters.current
+      //return this.$store.state.current.data
     }
   },
 

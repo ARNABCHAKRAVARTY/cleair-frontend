@@ -270,8 +270,7 @@ export default {
         "point" : this.new_loc_point,
         "name" : this.new_loc_name,
         "latitude" : this.new_loc_lat,
-        "longitude" : this.new_loc_lng
-
+        "longitude" : this.new_loc_lng,
       }
 
       apis.locations

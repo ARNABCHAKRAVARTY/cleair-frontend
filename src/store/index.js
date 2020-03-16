@@ -81,9 +81,9 @@ export default new Vuex.Store({
       state.current.updated = moment()
     },
 
-    SOCKET_STORE_DATA(state, payload) {
-      console.log('SOCKET (store_data):', payload)
-      Vue.set(state.current.data, payload.idx, payload)
+    SOCKET_NEW_DATA_MAP(state, payload) {
+      console.log('SOCKET (new_data_map):', payload)
+      Vue.set(state.current.data, payload.device_idx, payload)
       //state.current.data[payload.idx] = payload
       state.current.updated = moment()
     }
@@ -112,6 +112,12 @@ export default new Vuex.Store({
       console.log('SOCKET (store_locations):', payload)
       dispatch('get_locations')
     },
+
+    socket_storeDeviceLocation({ dispatch }, payload) {
+      console.log('SOCKET (store_device_locations):', payload)
+      dispatch('get_prerequisites')
+    },
+
 
     get_prerequisites({ state, commit }) {
       apis.prerequisites.get()
@@ -190,7 +196,29 @@ export default new Vuex.Store({
         .finally(() => {
           commit('SHOW_FEEDBACK')
         })
+    },
+
+    create_mapping(state, payload) {
+      apis.mapping.create(payload).then(
+        response => {
+          console.log('mapping API call done:', response)
+          commit('SET_FEEDBACK', {
+            kind: 'success',
+            message: 'Locations Loaded'
+          })
+        })
+        .catch(
+          error => {
+            commit('SET_FEEDBACK', {
+              kind: 'error',
+              message: 'ERROR: ' + error
+            })
+          })
+        .finally(() => {
+          commit('SHOW_FEEDBACK')
+        })
     }
+    
   },
 
   getters: {
@@ -200,6 +228,18 @@ export default new Vuex.Store({
 
     prerequisites(state) {
       return state.prerequisites.data
+    },
+
+    available_devices(state) {
+      return state.prerequisites.data.filter(item => item.location_id == null && item.device_idx != null);
+    },
+
+    mapped_devices(state) {
+      return state.prerequisites.data.filter(item => item.location_id != null && item.device_idx != null);
+    },
+
+    available_locations(state) {
+      return state.prerequisites.data.filter(item => item.location_id != null && item.device_idx == null);
     },
 
     devices(state) {

@@ -23,6 +23,11 @@ export default new Vuex.Store({
       updated: null
     },
 
+    history: {
+      data: [],
+      updated: null
+    },
+
     devices: {
       data: [],
       updated: null
@@ -60,6 +65,11 @@ export default new Vuex.Store({
     SET_PREREQS(state, payload) {
       state.prerequisites.data = payload
       state.prerequisites.updated = moment()
+    },
+
+    SET_HISTORY(state, payload) {
+      state.history.data = payload
+      state.history.updated = moment()
     },
 
     SET_DEVICES(state, payload) {
@@ -128,7 +138,14 @@ export default new Vuex.Store({
             kind: 'success',
             message: 'Pre-Requisites Loaded'
           })
-        })
+          console.log('Calling history API')
+          apis.history.get_history_data()
+            .then(response => {
+              commit('SET_HISTORY', response)
+              console.log('history API done')
+            })            
+          console.log('Called history API')
+          })
         .catch(error => {
           commit('SET_FEEDBACK', {
             kind: 'error',
@@ -228,6 +245,10 @@ export default new Vuex.Store({
 
     prerequisites(state) {
       return state.prerequisites.data
+    },
+
+    history(state) {
+      return state.history.data
     },
 
     available_devices(state) {

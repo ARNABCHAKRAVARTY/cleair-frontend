@@ -5,10 +5,15 @@ let history = {
   endpoint: '/history',
 
   get_history_data: function (location) {
-    if(location!=null) {
-    let url = this.endpoint + "/?days=1&location="+location }
-    else{
-        let url = this.endpoint + "/?days=1" }
+    console.log('GET_HISTORY_DATA', location)
+    let url = null
+    if (location != null) {
+      url = this.endpoint + "/?days=1&location=" + location
+    }
+    else {
+      url = this.endpoint + "/?days=1"
+    }
+    console.log('GET_HISTORY_DATA', url)    
 
 
     return new Promise((resolve, reject) => {

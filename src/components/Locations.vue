@@ -5,12 +5,10 @@
       <v-spacer></v-spacer>
       <v-select
         v-model="dropdown_select"
-        :hint="`${dropdown_select.state}, ${dropdown_select.abbr}`"
         :items="dropdown_items"
         item-text="state"
         item-value="abbr"
         label="Select"
-        persistent-hint
         return-object
         single-line
       ></v-select>
@@ -22,7 +20,79 @@
           <v-col cols="12">
             <h2 class="font-weight-thin">Located Devices</h2>
           </v-col>
-          <v-col v-for="item in mapped_devices" :key="item.device_idx" cols="12">
+
+          <v-row>
+            <v-col cols="12" sm="6" md="4" v-for="item in mapped_devices" :key="item.device_idx">
+              <v-card class="mx-auto elevation-2" outlined tile max-width="360px" min-width="290px">
+                <v-row no-gutters>
+                  <v-col cols="8">
+                    <v-row align="start" no-gutters>
+                      <v-col cols="12">
+                        <v-list-item two-line>
+                          <v-list-item-content>
+                            <v-list-item-title>{{ item.location_name }}</v-list-item-title>
+                            <v-list-item-subtitle class="font-weight-light">{{ dropdown_select.state }}</v-list-item-subtitle>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </v-col>
+                    </v-row>
+                    <v-row no-gutters>
+                      <v-col cols="12">
+                        <v-sparkline
+                          :fill="true"
+                          :value="get_history_day1"
+                          :gradient="gradient"
+                          :smooth="radius || false"
+                          :padding="padding"
+                          :line-width="width"
+                          :stroke-linecap="lineCap"
+                          :gradient-direction="gradientDirection"
+                          :type="type"
+                          :auto-line-width="autoLineWidth"
+                          auto-draw
+                        ></v-sparkline>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-row no-gutters class="fill-height pr-2">
+                      <v-col cols="12"
+                        style="overflow: visible; white-space: nowrap; text-align: right;
+                              font-size: 3.8rem; font-weight:500; font-variant: proportional-nums;
+                              letter-spacing:-0.15rem; line-height: 5rem; 
+                              padding-top:0.5rem;"
+                      >
+                        <div
+                          class="blue--text"
+                          style="float:right; "
+                        ><span>{{ current[item.device_idx][dropdown_select.abbr] | fix}}</span></div>
+                      </v-col>
+                      <v-col cols="12">
+                        <div
+                          class="text-right"
+                          style="font-size: 0.85rem; font-weight:700; 
+                            letter-spacing:normal; line-height: 1rem;
+                            width: 100%; margin-top:-0.75rem; padding-right:0.25rem;"
+                        >{{dropdown_select.unit}}</div>
+                      </v-col>
+                      <v-col cols="12">
+                        <div
+                          class="text-right"
+                          style="font-size: 0.85rem; font-weight:300; 
+                            letter-spacing:normal; line-height: 1.4rem;
+                            width: 100%; padding-right:0.25rem;"
+                        >{{current[item.device_idx].received_time | date_filt}}</div>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </v-col>
+          </v-row>
+
+
+          <!--
+          <v-col v-for="item in mapped_devices" :key="item.device_idx" cols="12" md="6">
             <v-card elevation="3" @click="open_dashboard(item.location_id)">
               <v-card-subtitle class="body-2 font-weight-medium pb-0">{{ item.location_name }}</v-card-subtitle>
               <v-card-title class="pt-0" style="align-items: end">
@@ -35,7 +105,8 @@
               <v-card-subtitle class="caption pb-0">{{ dropdown_select.state }}</v-card-subtitle>
               <v-card-text>
                 <span>{{current[item.device_idx].received_time | date_filt}}</span>
-              </v-card-text>
+              </v-card-text> -->
+              <!--
               <v-sparkline
                 :value="get_history_day1"
                 :gradient="gradient"
@@ -49,14 +120,32 @@
                 :auto-line-width="autoLineWidth"
                 auto-draw
               ></v-sparkline>
+              -->
+              <!--
+              <v-sparkline
+                :value="get_history(item.location_id)"
+                :gradient="gradient"
+                :smooth="radius"
+                :padding="padding"
+                :line-width="width"
+                :stroke-linecap="lineCap"
+                :gradient-direction="gradientDirection"
+                fill
+                :type="type"
+                :auto-line-width="autoLineWidth"
+                auto-draw
+              ></v-sparkline>
               <v-card-actions>
+                <v-icon>
+                mdi-access-point-network
+                </v-icon>
                 <v-card-subtitle
-                  class="font-weight-medium pb-0"
+                  class="font-weight-medium"
                 >{{current[item.device_idx].device_name}}</v-card-subtitle>
                 <v-spacer></v-spacer>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn icon>
+                    <v-btn fab small class="elevation-1">
                       <v-icon color="gray" dark v-on="on">mdi-link-off</v-icon>
                     </v-btn>
                   </template>
@@ -64,7 +153,8 @@
                 </v-tooltip>
               </v-card-actions>
             </v-card>
-          </v-col>
+          </v-col> -->
+
         </v-row>
 
         <v-row wrap>
@@ -1724,6 +1814,17 @@ export default {
       this.$store.dispatch("get_prerequisites");
     },
 
+    get_history(location) {
+      let hist = this.graph_data_1
+        .filter(d =>
+          moment().diff(moment(d.received_time), "hours") < 24
+        )
+        .filter(d => d.location_id == location)
+        .map(item => item[this.dropdown_select.abbr])
+      console.log("HIST DAY1: ", hist);
+      return hist;
+    },
+
     getGraphValue(n) {
       var arr = [];
       for (var i = 1; i <= n; i++) {
@@ -1791,7 +1892,7 @@ export default {
     },
 
     date_filt(date) {
-      return moment(date).format("MMMM Do, YYYY HH:MM:SS");
+      return moment(date).format("MMMM Do, YYYY HH:mm:ss");
     },
 
     fix(number) {

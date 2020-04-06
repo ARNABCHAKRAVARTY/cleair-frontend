@@ -40,7 +40,7 @@
                       <v-col cols="12">
                         <v-sparkline
                           :fill="true"
-                          :value="get_history_day1"
+                          :value="get_history(item.location_id)"
                           :gradient="gradient"
                           :smooth="radius || false"
                           :padding="padding"
@@ -1658,7 +1658,7 @@ export default {
       radius: 8,
       padding: 10,
       lineCap: "round",
-      gradient: ["#99d8c9", "#2ca25f"],
+      gradient: ["rgba(10,10,240,0.80)", "rgba(33,150,243,0.20)"],
       value: [0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8],
       gradientDirection: "top",
       gradients,

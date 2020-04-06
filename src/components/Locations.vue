@@ -23,12 +23,12 @@
 
           <v-row>
             <v-col cols="12" sm="6" md="4" v-for="item in mapped_devices" :key="item.device_idx">
-              <v-card class="mx-auto elevation-2" outlined tile max-width="360px" min-width="290px">
+              <v-card class="mx-auto elevation-2" outlined tile max-width="360px" min-width="290px" @click="open_dashboard(item.location_id)">
                 <v-row no-gutters>
                   <v-col cols="8">
-                    <v-row align="start" no-gutters>
+                    <v-row align="start" no-gutters >
                       <v-col cols="12">
-                        <v-list-item two-line>
+                        <v-list-item two-line >
                           <v-list-item-content>
                             <v-list-item-title>{{ item.location_name }}</v-list-item-title>
                             <v-list-item-subtitle class="font-weight-light">{{ dropdown_select.state }}</v-list-item-subtitle>

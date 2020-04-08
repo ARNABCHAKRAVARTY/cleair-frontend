@@ -1723,6 +1723,17 @@ export default {
         })
     },
 
+    get_labels_day_vega () {
+      let hist = !!this.history_data ? this.history_data.received_time : null
+      let h = !!hist ? hist.slice(hist.length - 24, hist.length) : []
+
+      return h.map(t => {
+          let hour = moment(t).format('h')
+          let m = moment(t).format('A')
+          return hour + m 
+        })
+    },
+
     get_labels_week() {
       let hist = !!this.history_data ? this.history_data.received_time : null
       let start = Math.max(0, hist.length - 7*24)
@@ -1806,7 +1817,48 @@ export default {
       let h = !!hist ? hist.slice(start, hist.length) : []
       console.log('Pressure (7D)', h)
       return h
-    }
+    },
+
+    get_data_day_pm25() {
+      var g_data = []
+      for (var i=0; i<24; i++) {
+        g_data.push({ date: this.get_labels_day_vega[i] , value: this.get_history_data1_pm25[i] })
+      }
+      return g_data
+    },
+
+    get_data_day_pm10() {
+      var g_data = []
+      for (var i=0; i<24; i++) {
+        g_data.push({ date: this.get_labels_day_vega[i] , value: this.get_history_data1_pm10[i] })
+      }
+      return g_data
+    },
+
+    get_data_day_temperature() {
+      var g_data = []
+      for (var i=0; i<24; i++) {
+        g_data.push({ date: this.get_labels_day_vega[i] , value: this.get_history_data1_temperature[i] })
+      }
+      return g_data
+    },
+
+    get_data_day_humidity() {
+      var g_data = []
+      for (var i=0; i<24; i++) {
+        g_data.push({ date: this.get_labels_day_vega[i] , value: this.get_history_data1_humidity[i] })
+      }
+      return g_data
+    },
+
+    get_data_day_pressure() {
+      var g_data = []
+      for (var i=0; i<24; i++) {
+        g_data.push({ date: this.get_labels_day_vega[i] , value: this.get_history_data1_pressure[i] })
+      }
+      return g_data
+    },
+
   },
 
   methods: {
@@ -1866,13 +1918,14 @@ export default {
     open_dashboard(loc_id) {
       const endpoint = "/history/";
       this.dashboard_dialog = true;
-      let url = endpoint + loc_id  ;
+      let url = endpoint + loc_id +"?days=1" ;
       console.log("URL: ", url);
       //apis.history.get_history_data(loc_id)
       http.get(url).then(
         response => {
           this.history_data = response.data;
           console.log("HISTORY:", this.history_data);
+          console.log("VEGA GRAPH DATA: ", this.get_data_day_pm25)
           //embed("#vegapm25", this.spec, { actions: false });
         },
         error => {
@@ -1900,7 +1953,7 @@ export default {
     }
   }
 };
-</script>>
+</script>
 
 <style scoped>
 </style>

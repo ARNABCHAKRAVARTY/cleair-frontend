@@ -8,6 +8,7 @@ import DevicesTable from '../components/DevicesTable.vue'
 import Devices from '../components/Devices.vue'
 import Locations from '../components/Locations.vue'
 import SignIn from '../components/Signin.vue'
+import Dashboard from '../components/Dashboard.vue'
 
 Vue.use(VueRouter)
 
@@ -46,6 +47,11 @@ const routes = [
     path: '/devices',
     name: 'devices',
     component: Devices
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard
   },
   {
     path: '/SignIn',

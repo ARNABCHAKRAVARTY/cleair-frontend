@@ -1,14 +1,10 @@
 <template>
   <div class="chart-lines">
     <v-card class="pa-2">
-      <v-card-title>Vega-Lite Line Chart #{{index}}</v-card-title>
+      <v-card-title>{{name}}</v-card-title>
       <v-card-text ref="box" class="pa-0">
         <div :id="chart_id" style="width:100%;"></div>
       </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn @click="update">Update</v-btn>
-      </v-card-actions>
     </v-card>
   </div>
 </template>
@@ -16,30 +12,23 @@
 <script>
 import embed from "vega-embed";
 export default {
-  props: ["index"],
+  props: ["index", "name", "chart", "xdata", "ydata"],
   data() {
     return {
-      values: [
-        { date: "2019-01-01", price: 28 },
-        { date: "2019-01-02", price: 28 },
-        { date: "2019-01-03", price: 28 },
-        { date: "2019-01-04", price: 28 },
-        { date: "2019-01-05", price: 28 },
-        { date: "2019-01-06", price: 28 },
-        { date: "2019-01-07", price: 28 },
-        { date: "2019-01-08", price: 28 },
-        { date: "2019-01-09", price: 28 },
-        { date: "2019-01-10", price: 28 },
-        { date: "2019-01-11", price: 28 },
-        { date: "2019-01-12", price: 28 },
-        { date: "2019-01-13", price: 28 },
-      ]
+      values: {
+        date: [],
+        price: []
+      }
     };
   },
 
   computed: {
     chart_id() {
-      return `lines-${this.index}`;
+      return `lines-${this.index}-${this.chart}`;
+    },
+
+    data() {
+      return this.xdata.map( (x,i) => {return {x: x, y: this.ydata[i]}})
     },
 
     schema() {
@@ -49,7 +38,7 @@ export default {
         height: 128,
         width: "container",
         data: {
-          values: this.values
+          values: this.data
         },
         mark: {
           type: "area",
@@ -77,11 +66,11 @@ export default {
         },
         encoding: {
           x: {
-            field: "date",
+            field: 'x',
             type: "temporal"
           },
           y: {
-            field: "price",
+            field: "y",
             type: "quantitative"
           }
         }
@@ -90,8 +79,8 @@ export default {
   },
 
   watch: {
-    values() {
-      console.log("updated");
+    data() {
+      console.log("data updated");
       this.draw();
     }
   },
@@ -105,18 +94,11 @@ export default {
     },
 
     update() {
-      this.values = this.values.map(data => {
-        return {
-          date: data.date,
-          price: Math.floor(Math.random() * Math.floor(100))
-        };
-      });
+      console.log("update")
     }
   },
 
   mounted() {
-    this.update();
-    //this.draw();
   }
 };
 </script>

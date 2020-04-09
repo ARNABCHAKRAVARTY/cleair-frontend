@@ -1,7 +1,7 @@
 <template>
   <div class="chart-lines">
     <v-card class="pa-2">
-      <v-card-title>{{name}}</v-card-title>
+      <v-card-title>{{measure.text}}</v-card-title>
       <v-card-text ref="box" class="pa-0">
         <div :id="chart_id" style="width:100%;"></div>
       </v-card-text>
@@ -12,7 +12,7 @@
 <script>
 import embed from "vega-embed";
 export default {
-  props: ["index", "name", "chart", "xdata", "ydata"],
+  props: ["index", "xdata", "ydata", "measure", "days"],
   data() {
     return {
       values: {
@@ -24,18 +24,52 @@ export default {
 
   computed: {
     chart_id() {
-      return `lines-${this.index}-${this.chart}`;
+      return `lines-${this.index}-${this.measure.value}`;
     },
 
     data() {
-      return this.xdata.map( (x,i) => {return {x: x, y: this.ydata[i]}})
+      return this.xdata.map((x, i) => {
+        let z = { x: x, y: (this.ydata[i] > 0) ? this.ydata[i] : null };
+        return z
+      });
+    },
+
+    scales() {
+      let ymax = this.ydata.map(y => (y > 0) ? y : -Infinity)
+      let ymin = this.ydata.map(y => (y > 0) ? y : +Infinity)
+      let max = Math.max(...ymax)
+      let min = Math.min(...ymin)
+      console.log('MIN-MAX: ', min, max)
+
+      if (((max-min)/min) < 0.05) {
+        min = max/1.05
+      } else {
+        min = 0
+      }
+      return {
+        max: max,
+        min: min
+      }
+    },
+
+    timeunit() {
+      if (this.days == 1) {
+        return {unit: "hours", format:"%a %I %p"};
+      } else if (this.days == 7) {
+        return {unit: "monthdate", format:"%b %d %I %p"};
+      } else if (this.days == 28) {
+        return {unit: "monthdate", format:"%b %d"};
+      } else if (this.days == 365) {
+        return {unit: "yearmonth", format:"%b %d, %Y"};
+      }
     },
 
     schema() {
+      console.log('SCHEMA')
       return {
         $schema: "https://vega.github.io/schema/vega-lite/v4.json",
-        description: "A simple line chart with embedded data.",
-        height: 128,
+        description: "?",
+        height: 192,
         width: "container",
         data: {
           values: this.data
@@ -66,12 +100,22 @@ export default {
         },
         encoding: {
           x: {
-            field: 'x',
-            type: "temporal"
+            field: "x",
+            type: "temporal",
+            title: "time",
+            axis: {
+              format: this.timeunit.format
+            },
+
+            timeunit: this.timeunit.unit
           },
           y: {
             field: "y",
-            type: "quantitative"
+            type: "quantitative",
+            scale: {
+              domain: [this.scales.min, this.scales.max]
+            },
+            title: this.measure.unit
           }
         }
       };
@@ -94,11 +138,12 @@ export default {
     },
 
     update() {
-      console.log("update")
+      console.log("update");
     }
   },
 
   mounted() {
+    console.log(this.days);
   }
 };
 </script>

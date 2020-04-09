@@ -68,7 +68,7 @@
               <template v-slot:activator="{ on }">
               <div
                 class="text-right" v-on="on"
-                style="font-size: 0.85rem; font-weight:300; 
+                style="font-size: 0.8rem; font-weight:300; 
                               letter-spacing:normal; line-height: 1.4rem;
                               width: 100%; padding-right:0.25rem;"
               >{{current.received_time | from_now}}</div>
@@ -110,7 +110,21 @@ export default {
         gradientDirection: "top",
         type: "trend"
       },
-      data: [],
+      data: {
+          received_time: [],
+          bat_v: [],
+          pm25: [],
+          bat_soc: [],
+          vout: [],
+          bat_temp: [],
+          cpu_temp: [],
+          temperature: [],
+          sdt: [],
+          vin: [],
+          humidity: [],
+          pressure: [],
+          pm10: []
+        },
 
       details: {
         show: false,
@@ -126,25 +140,14 @@ export default {
     },
 
     history() {
-      let h = this.data
-      if ((!!h) && (h.length >0)) {
-        let H = h.filter(d => moment().diff(moment(d.received_time), "hours") < 24)
-                 .map(d => d[this.measure.value])
-        return H
-      } else {
-        return null
-      }
+      return this.data[this.measure.value]
     },
 
     scale() {
-      let h = this.data;
-      if (!!h && h.length > 0) {
-        let H = h.map(h => h[this.measure.value]);
         return {
-          max: Math.max(...H),
-          min: Math.min(...H)
+          max: Math.max(...this.history),
+          min: Math.min(...this.history)
         };
-      }
     }
 
   },
@@ -152,9 +155,11 @@ export default {
   methods: {
     get_data() {
       console.log('HISTORY: ', this.item.location_id, 1)
-      apis.history.get_history_data(this.item.location_id, 1)
+      apis.history.get_location_history(this.item.location_id, 1)
         .then(response => {
-          this.data = response
+          for (let k in response) {
+            this.$set(this.data, k, response[k])
+          }
         })
         .catch(error => console.log('Error: ', error))
     },

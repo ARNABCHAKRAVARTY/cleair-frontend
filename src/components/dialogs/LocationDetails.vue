@@ -1,11 +1,11 @@
 <template>
   <v-dialog :value="show" fullscreen hide-overlay transition="dialog-bottom-transition">
-    <v-card>
+    <v-card style="background-color:rgba(247,247,252,1);">
       <v-toolbar dark color="primary">
         <v-btn icon dark @click="close_dialog">
           <v-icon>mdi-close</v-icon>
         </v-btn>
-        <v-toolbar-title>Dashboard</v-toolbar-title>
+        <v-toolbar-title>{{ location_obj.location_name }}</v-toolbar-title>
         <v-spacer></v-spacer>
       </v-toolbar>
       <v-col class="d-flex" cols="12" sm="6">
@@ -13,11 +13,17 @@
       </v-col>
       <v-divider></v-divider>
 
-      <template>
-        <v-card class="elevation-2 mt-5 mb-5 mx-auto" max-width="800">
-          <lines :xdata="data.x" :ydata="data.y" :index="location" name="PM 2.5" chart="pm25"/>
+      <div class="pa-2" v-for="measure in measures" :key="measure.value">
+        <v-card class="mx-auto elevation-2 mt-1 mb-1" max-width="800">
+          <lines
+            :xdata="data.received_time"
+            :ydata="data[measure.value]"
+            :index="location"
+            :measure="measure"
+            :days="day"
+          />
         </v-card>
-      </template>
+      </div>
     </v-card>
   </v-dialog>
 </template>
@@ -110,11 +116,19 @@ export default {
   },
 
   computed: {
+    location_obj() {
+      let prereqs = this.$store.state.prerequisites.data;
+      console.log(prereqs, this.location);
+      let u = prereqs.filter(d => d.location_id == this.location);
+      return u[0];
+    },
+
     data() {
-      return {
-        x: this.history[this.day]['received_time'],
-        y: this.history[this.day]['pm25']
-      }
+      return this.history[this.day];
+    },
+
+    measures() {
+      return this.$store.state.master.measures;
     }
   },
 
@@ -134,7 +148,7 @@ export default {
         .get_location_history(this.location, days)
         .then(response => {
           for (let k in response) {
-            this.$set(this.history[days], k, response[k])
+            this.$set(this.history[days], k, response[k]);
           }
         })
         .catch(error => console.log("Error: ", error));

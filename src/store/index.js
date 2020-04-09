@@ -12,6 +12,16 @@ export default new Vuex.Store({
     user: '',
     auth_token: '',
 
+    master: {
+      measures: [
+        { text: "Temperature", value: "temperature", unit: "°C" },
+        { text: "Pressure", value: "pressure", unit: "Pa" },
+        { text: "Humidity", value: "humidity", unit: "%" },
+        { text: "PM 2.5", value: "pm25", unit: "μg/m³" },
+        { text: "PM 10", value: "pm10", unit: "μg/m³" }
+      ]  
+    },
+
     feedback: {
       kind: null,
       show: false,

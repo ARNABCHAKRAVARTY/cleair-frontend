@@ -1,26 +1,27 @@
 <template>
   <v-card class="mx-auto" max-width="1200" style="background-color:rgba(128,128,200,0.0625);">
-    <v-card-title class="pb-0">
-      <v-row no-gutters align="center" justify="space-around">
-        <v-col cols="12" sm="8">
-          <span class="headline">Locations</span>
-        </v-col>
-        <v-col cols="12" sm="4">
-          <v-select solo hide-details v-model="selection" :items="measures" label="Measure" single-line></v-select>
-        </v-col>
-      </v-row>
-    </v-card-title>
-
     <template>
-      <v-container class="py-0">
-        <v-row no-gutters wrap>
-          <v-col cols="12">
-            <h2 class="font-weight-thin">Located Devices</h2>
+      <v-container class="py-0" fill-height>
+        <v-row no-gutters align="center" justify="space-around">
+          <v-col cols="12" sm="8" class="pa-4">
+            <span class="headline">Locations</span>
           </v-col>
+          <v-col cols="12" sm="4" class="pa-4">
+            <v-select
+              solo
+              hide-details
+              v-model="selection"
+              :items="measures"
+              label="Measure"
+              single-line
+            ></v-select>
+          </v-col>
+        </v-row>
 
+        <v-row no-gutters wrap>
           <v-row v-if="!!history">
             <v-col cols="12" sm="6" md="4" v-for="item in mapped_devices" :key="item.device_idx">
-              <location-measure :item="item" :measure="measure" :scales="scales"></location-measure>
+              <location-measure :item="item" :measure="measure"></location-measure>
             </v-col>
           </v-row>
         </v-row>
@@ -28,13 +29,6 @@
     </template>
   </v-card>
 </template>
-
-<script>
-export default {};
-</script>
-
-<style>
-</style></template>
 
 <script>
 export default {
@@ -45,19 +39,16 @@ export default {
   data() {
     return {
       selection: "pm25",
-      measures: [
-        { text: "Temperature", value: "temperature", unit: "°C" },
-        { text: "Pressure", value: "pressure", unit: "Pa" },
-        { text: "Humidity", value: "humidity", unit: "%" },
-        { text: "PM 2.5", value: "pm25", unit: "μg/m³" },
-        { text: "PM 10", value: "pm10", unit: "μg/m³" }
-      ]
     };
   },
 
   computed: {
     measure() {
       return this.measures.filter(m => m.value == this.selection)[0];
+    },
+
+    measures() {
+      return this.$store.state.master.measures;
     },
 
     current() {

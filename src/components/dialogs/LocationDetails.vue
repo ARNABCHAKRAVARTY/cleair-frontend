@@ -1,29 +1,65 @@
 <template>
   <v-dialog :value="show" fullscreen hide-overlay transition="dialog-bottom-transition">
-    <v-card style="background-color:rgba(247,247,252,1);">
-      <v-toolbar dark color="primary">
-        <v-btn icon dark @click="close_dialog">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-        <v-toolbar-title>{{ location_obj.location_name }}</v-toolbar-title>
-        <v-spacer></v-spacer>
-      </v-toolbar>
-      <v-col class="d-flex" cols="12" sm="6">
-        <v-select :value="day" :items="days" label="Duration" @change="change_days"></v-select>
-      </v-col>
-      <v-divider></v-divider>
+    <v-card>
+      <v-container class="pt-0" style="background-color:rgba(247,247,252,1);">
+        <v-row>
+          <v-toolbar dark color="primary">
+            <v-btn icon dark @click="close_dialog">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <v-toolbar-title>{{ location_obj.location_name }}</v-toolbar-title>
+            <v-spacer></v-spacer>
+          </v-toolbar>
+        </v-row>
+        <v-row>
+          <v-col cols="12" sm="8">
+            <h2 class="headline">{{ location_obj.location_name }}</h2>
+          </v-col>
+          <v-col class="d-flex" cols="12" sm="4">
+            <v-select :value="day" :items="days" label="Duration" @change="change_days"></v-select>
+          </v-col>
+        </v-row>
 
-      <div class="pa-2" v-for="measure in measures" :key="measure.value">
-        <v-card class="mx-auto elevation-2 mt-1 mb-1" max-width="800">
-          <lines
-            :xdata="data.received_time"
-            :ydata="data[measure.value]"
-            :index="location"
-            :measure="measure"
-            :days="day"
-          />
-        </v-card>
-      </div>
+        <v-row class="pa-2" v-for="measure in measures" :key="measure.value">
+          <v-col cols="12" sm="6">
+            <v-card class="mx-auto elevation-2 mt-1 mb-1" max-width="800">
+              <lines
+                :xdata="data.received_time"
+                :ydata="data[measure.value]"
+                :index="location"
+                :measure="measure"
+                :current="current[measure.value]"
+                :days="day"
+              />
+            </v-card>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-card class="mx-auto elevation-2 mt-1 mb-1" max-width="800">
+              <histogram
+                :xdata="data[measure.value]"
+                :index="location"
+                :measure="measure"
+                :days="day"
+              />
+            </v-card>
+          </v-col>
+        </v-row>
+        <v-row>
+          <template v-for="measure in measures">
+            <v-col cols="12" sm="6" :key="measure.value" v-if="measure.value != 'pm25'">
+              <v-card class="mx-auto elevation-2 mt-1 mb-1" max-width="800">
+                <heatmap
+                  :xdata="data[measure.value]"
+                  :ydata="data.pm25"
+                  :index="location"
+                  :measure="get_measure(measure.value)"
+                  :days="day"
+                />
+              </v-card>
+            </v-col>
+          </template>
+        </v-row>
+      </v-container>
     </v-card>
   </v-dialog>
 </template>
@@ -34,11 +70,14 @@ const apis = require("@/resources/apis");
 export default {
   props: {
     show: Boolean,
-    location: { type: String, required: false, default: null }
+    location: { type: String, required: false, default: null },
+    device: { type: String, required: false, default: null }
   },
 
   components: {
-    Lines: () => import("@/components/charts/Lines")
+    Lines: () => import("@/components/charts/Lines"),
+    Histogram: () => import("@/components/charts/Histogram"),
+    Heatmap: () => import("@/components/charts/Heatmap")
   },
 
   data() {
@@ -129,10 +168,21 @@ export default {
 
     measures() {
       return this.$store.state.master.measures;
+    },
+
+    current() {
+      if (!!this.$store.state.current.data)
+        return this.$store.state.current.data[this.device];
     }
   },
 
   methods: {
+    get_measure(measure) {
+      let m = this.measures.filter(m => m.value == measure);
+      console.log("MEASURE: ", m[0]);
+      return m[0];
+    },
+
     change_days($event) {
       console.log($event);
       this.get_history($event);

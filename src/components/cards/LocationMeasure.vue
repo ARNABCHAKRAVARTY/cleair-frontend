@@ -80,7 +80,7 @@
       </v-col>
     </v-row>
     <location-details v-if="details.show"
-      :show.sync="details.show" :location="details.location">
+      :show.sync="details.show" :location="details.location" :device="item.device_idx">
     </location-details>
   </v-card>
 </template>

@@ -1,36 +1,37 @@
 <template>
-  <div class="chart-lines">
+  <div class="chart-dist">
     <v-card class="pa-2">
       <v-row no-gutters>
         <v-col cols="6">
           <v-card-title class="pt-1">{{measure.text}}</v-card-title>
-          <v-card-subtitle>Time-Series</v-card-subtitle>
+          <v-card-subtitle>Distribution</v-card-subtitle>
         </v-col>
         <v-col cols="6">
           <div class="text-right px-2 py-1">
-            <span class="display-1 green--text">{{current | fix}}</span> 
+            <span class="display-1 green--text">{{mean | fix}}</span>
             <span class="title">&nbsp;{{measure.unit}}</span>
           </div>
           <div class="text-right pr-2" style="margin-top:-0.8rem;">
-            <span class="overline" style="">Current</span>
+            <span class="overline" style>Average</span>
           </div>
         </v-col>
       </v-row>
       <v-row no-gutters>
         <v-col>
-        <v-card-text ref="box" class="pa-0">
-          <div :id="chart_id" style="width:100%;"></div>
-        </v-card-text>
+          <v-card-text ref="box" class="pa-0">
+            <div :id="chart_id" style="width:100%;"></div>
+          </v-card-text>
         </v-col>
       </v-row>
     </v-card>
   </div>
 </template>
 
+
 <script>
 import embed from "vega-embed";
 export default {
-  props: ["index", "xdata", "ydata", "measure", "current", "days"],
+  props: ["index", "xdata", "measure", "days"],
   data() {
     return {
       values: {
@@ -42,32 +43,19 @@ export default {
 
   computed: {
     chart_id() {
-      return `lines-${this.index}-${this.measure.value}`;
+      return `hist-${this.index}-${this.measure.value}`;
     },
 
     data() {
       return this.xdata.map((x, i) => {
-        let z = { x: x, y: this.ydata[i] > 0 ? this.ydata[i] : null };
+        let z = { x: x > 0 ? x : null };
         return z;
       });
     },
 
-    scales() {
-      let ymax = this.ydata.map(y => (y > 0 ? y : -Infinity));
-      let ymin = this.ydata.map(y => (y > 0 ? y : +Infinity));
-      let max = Math.max(...ymax);
-      let min = Math.min(...ymin);
-      console.log("MIN-MAX: ", min, max);
-
-      if ((max - min) / min < 0.05) {
-        min = max / 1.05;
-      } else {
-        min = 0;
-      }
-      return {
-        max: max,
-        min: min
-      };
+    mean() {
+      let d = this.data.map(d => d.x).filter(isFinite);
+      return d.reduce((prev, curr) => prev + curr, 0) / d.length;
     },
 
     timeunit() {
@@ -92,48 +80,49 @@ export default {
         data: {
           values: this.data
         },
-        mark: {
-          type: "area",
-          interpolate: "basis",
-          line: {
-            color: "darkgreen"
+        transform: [
+          {
+            bin: true,
+            field: "x",
+            as: "bin_x"
           },
-          color: {
-            x1: 1,
-            y1: 1,
-            x2: 1,
-            y2: 0,
-            gradient: "linear",
-            stops: [
-              {
-                offset: 0,
-                color: "white"
-              },
-              {
-                offset: 1,
-                color: "darkgreen"
-              }
-            ]
+          {
+            aggregate: [{ op: "count", as: "Count" }],
+            groupby: ["bin_x", "bin_x_end"]
+          },
+          {
+            joinaggregate: [{ op: "sum", field: "Count", as: "TotalCount" }]
+          },
+          {
+            calculate: "datum.Count/datum.TotalCount",
+            as: "PercentOfTotal"
           }
+        ],
+        mark: {
+          type: "bar",
+          tooltip: true,
+          color: "rgba(0,100,0,0.5)"
         },
         encoding: {
           x: {
-            field: "x",
-            type: "temporal",
-            title: "Time",
-            axis: {
-              format: this.timeunit.format
-            },
-
-            timeunit: this.timeunit.unit
-          },
-          y: {
-            field: "y",
+            title: this.measure.text,
+            field: "bin_x",
             type: "quantitative",
-            scale: {
-              domain: [this.scales.min, this.scales.max]
-            },
-            title: this.measure.unit
+            bin: { binned: true }
+          },
+          x2: { field: "bin_x_end" },
+          y: {
+            title: "Relative Frequency",
+            field: "PercentOfTotal",
+            type: "quantitative",
+            axis: {
+              format: ".1~%"
+            }
+          }
+        },
+        config: {
+          view: {
+            stroke: "transparent"
           }
         }
       };
@@ -167,6 +156,7 @@ export default {
   },
 
   mounted() {
+    console.log("HEATMAP");
     console.log(this.days);
   }
 };

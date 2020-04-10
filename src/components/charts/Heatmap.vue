@@ -1,28 +1,11 @@
 <template>
-  <div class="chart-lines">
+  <div class="corr-heat">
     <v-card class="pa-2">
-      <v-row no-gutters>
-        <v-col cols="6">
-          <v-card-title class="pt-1">{{measure.text}}</v-card-title>
-          <v-card-subtitle>Time-Series</v-card-subtitle>
-        </v-col>
-        <v-col cols="6">
-          <div class="text-right px-2 py-1">
-            <span class="display-1 green--text">{{current | fix}}</span> 
-            <span class="title">&nbsp;{{measure.unit}}</span>
-          </div>
-          <div class="text-right pr-2" style="margin-top:-0.8rem;">
-            <span class="overline" style="">Current</span>
-          </div>
-        </v-col>
-      </v-row>
-      <v-row no-gutters>
-        <v-col>
-        <v-card-text ref="box" class="pa-0">
-          <div :id="chart_id" style="width:100%;"></div>
-        </v-card-text>
-        </v-col>
-      </v-row>
+      <v-card-title>{{measure.text}} &mdash; PM 2.5</v-card-title>
+      <v-card-subtitle>Correlation</v-card-subtitle>
+      <v-card-text ref="box" class="pa-0">
+        <div :id="chart_id" style="width:100%;"></div>
+      </v-card-text>
     </v-card>
   </div>
 </template>
@@ -30,7 +13,7 @@
 <script>
 import embed from "vega-embed";
 export default {
-  props: ["index", "xdata", "ydata", "measure", "current", "days"],
+  props: ["index", "xdata", "ydata", "measure", "days"],
   data() {
     return {
       values: {
@@ -42,7 +25,7 @@ export default {
 
   computed: {
     chart_id() {
-      return `lines-${this.index}-${this.measure.value}`;
+      return `corr-${this.index}-${this.measure.value}`;
     },
 
     data() {
@@ -92,48 +75,40 @@ export default {
         data: {
           values: this.data
         },
-        mark: {
-          type: "area",
-          interpolate: "basis",
-          line: {
-            color: "darkgreen"
-          },
-          color: {
-            x1: 1,
-            y1: 1,
-            x2: 1,
-            y2: 0,
-            gradient: "linear",
-            stops: [
-              {
-                offset: 0,
-                color: "white"
-              },
-              {
-                offset: 1,
-                color: "darkgreen"
-              }
-            ]
+        transform: [
+          {
+            filter: {
+              and: [
+                { field: "x", valid: true },
+                { field: "y", valid: true }
+              ]
+            }
           }
-        },
+        ],
+        mark: "rect",
         encoding: {
           x: {
+            bin: { maxbins: 8 },
             field: "x",
-            type: "temporal",
-            title: "Time",
-            axis: {
-              format: this.timeunit.format
-            },
-
-            timeunit: this.timeunit.unit
+            type: "quantitative",
+            title: `${this.measure.text} (${this.measure.unit})`
           },
           y: {
+            bin: { maxbins: 8 },
             field: "y",
             type: "quantitative",
-            scale: {
-              domain: [this.scales.min, this.scales.max]
-            },
-            title: this.measure.unit
+            title: "PM 2.5"
+          },
+          color: {
+            aggregate: "count",
+            type: "quantitative",
+            title: "Count",
+            scale: {scheme: "greens"}
+          }
+        },
+        config: {
+          view: {
+            stroke: "transparent"
           }
         }
       };
@@ -160,13 +135,8 @@ export default {
     }
   },
 
-  filters: {
-    fix(number) {
-      return number.toFixed(0);
-    }
-  },
-
   mounted() {
+    console.log("HEATMAP");
     console.log(this.days);
   }
 };

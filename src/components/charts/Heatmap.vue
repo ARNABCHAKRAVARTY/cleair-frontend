@@ -1,7 +1,7 @@
 <template>
   <div class="corr-heat">
-    <v-card class="pa-2">
-      <v-card-title>{{measure.text}} &mdash; PM 2.5</v-card-title>
+    <v-card class="pa-1">
+      <v-card-title>{{measure.text}} &mdash; {{target.text}}</v-card-title>
       <v-card-subtitle>Correlation</v-card-subtitle>
       <v-card-text ref="box" class="pa-0">
         <div :id="chart_id" style="width:100%;"></div>
@@ -13,7 +13,7 @@
 <script>
 import embed from "vega-embed";
 export default {
-  props: ["index", "xdata", "ydata", "measure", "days"],
+  props: ["index", "xdata", "ydata", "measure", "target", "days", "scheme"],
   data() {
     return {
       values: {
@@ -85,25 +85,30 @@ export default {
             }
           }
         ],
-        mark: "rect",
+        mark: {
+          type: "rect",
+          tooltip: true
+        },
         encoding: {
           x: {
             bin: { maxbins: 8 },
             field: "x",
             type: "quantitative",
+            axis: {format: "d"},
             title: `${this.measure.text} (${this.measure.unit})`
           },
           y: {
             bin: { maxbins: 8 },
             field: "y",
             type: "quantitative",
-            title: "PM 2.5"
+            axis: {format: "d"},
+            title: `${this.target.text} (${this.target.unit})`
           },
           color: {
             aggregate: "count",
             type: "quantitative",
             title: "Count",
-            scale: {scheme: "greens"}
+            scale: {scheme: this.scheme || "greens"}
           }
         },
         config: {
@@ -138,6 +143,7 @@ export default {
   mounted() {
     console.log("HEATMAP");
     console.log(this.days);
+    this.draw()
   }
 };
 </script>

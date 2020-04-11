@@ -1,6 +1,6 @@
 <template>
   <div class="chart-lines">
-    <v-card class="pa-2">
+    <v-card class="pa-1">
       <v-row no-gutters>
         <v-col cols="6">
           <v-card-title class="pt-1">{{measure.text}}</v-card-title>
@@ -133,7 +133,7 @@ export default {
             scale: {
               domain: [this.scales.min, this.scales.max]
             },
-            title: this.measure.unit
+            title: `${this.measure.text} (${this.measure.unit})`
           }
         }
       };
@@ -144,7 +144,7 @@ export default {
     data() {
       console.log("data updated");
       this.draw();
-    }
+    },
   },
 
   methods: {
@@ -167,7 +167,8 @@ export default {
   },
 
   mounted() {
-    console.log(this.days);
+    console.log('LINES MOUNTED:', this.days);
+    this.draw()
   }
 };
 </script>

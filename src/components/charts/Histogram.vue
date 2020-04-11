@@ -1,6 +1,6 @@
 <template>
   <div class="chart-dist">
-    <v-card class="pa-2">
+    <v-card class="pa-1">
       <v-row no-gutters>
         <v-col cols="6">
           <v-card-title class="pt-1">{{measure.text}}</v-card-title>
@@ -105,9 +105,10 @@ export default {
         },
         encoding: {
           x: {
-            title: this.measure.text,
+            title: `${this.measure.text} (${this.measure.unit})`,
             field: "bin_x",
             type: "quantitative",
+            axis: {format: "d"},
             bin: { binned: true }
           },
           x2: { field: "bin_x_end" },
@@ -158,6 +159,7 @@ export default {
   mounted() {
     console.log("HEATMAP");
     console.log(this.days);
+    this.draw()
   }
 };
 </script>

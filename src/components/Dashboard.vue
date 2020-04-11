@@ -20,11 +20,26 @@
 
         <v-row no-gutters wrap>
           <v-row v-if="!!history">
-            <v-col cols="12" sm="6" md="4" v-for="item in mapped_devices" :key="item.device_idx">
+            <v-col cols="12" sm="6" v-for="item in mapped_devices" :key="item.device_idx">
               <location-measure :item="item" :measure="measure"></location-measure>
             </v-col>
           </v-row>
         </v-row>
+
+              <!--
+        <template v-if="!!history">
+          <v-row no-gutters wrap v-for="(item1, id1) in mapped_devices" :key="item1.device_idx">
+            <v-col cols="12" sm="6" v-for="(item2, id2) in mapped_devices" :key="item2.device_idx">
+              <location-location
+                :from="item1"
+                :to="item2"
+                :measure="measure"
+                v-if="id1 < id2"
+              ></location-location>
+            </v-col>
+          </v-row>
+        </template>
+              -->
       </v-container>
     </template>
   </v-card>
@@ -33,12 +48,13 @@
 <script>
 export default {
   components: {
-    LocationMeasure: () => import("@/components/cards/LocationMeasure")
+    LocationMeasure: () => import("@/components/cards/LocationMeasure"),
+    LocationLocation: () => import("@/components/cards/LocationLocation")
   },
 
   data() {
     return {
-      selection: "pm25",
+      selection: "pm25"
     };
   },
 

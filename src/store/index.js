@@ -14,18 +14,18 @@ export default new Vuex.Store({
 
     master: {
       measures: [
-        { text: "Temperature", value: "temperature", unit: "°C", precision: 0, format: "d" },
-        { text: "Pressure", value: "pressure", unit: "Pa", precision: 0, format: "d" },
-        { text: "Humidity", value: "humidity", unit: "%", precision: 0, format: "d" },
         { text: "PM 2.5", value: "pm25", unit: "μg/m³", precision: 0, format: "d" },
-        { text: "PM 10", value: "pm10", unit: "μg/m³", precision: 0, format: "d" }
+        { text: "PM 10", value: "pm10", unit: "μg/m³", precision: 0, format: "d" },
+        { text: "Temperature", value: "temperature", unit: "°C", precision: 0, format: "d" },
+        { text: "Humidity", value: "humidity", unit: "%", precision: 0, format: "d" },
+        { text: "Pressure", value: "pressure", unit: "Pa", precision: 0, format: "d" }
       ],
       
       device_measures: [
-        { text: "CPU Temperature", value: "cpu_temp", unit: "°C", precision: 0, format: "d" },
-        { text: "Voltage IN", value: "vin", unit: "V", precision: 0, format: "d" },
-        { text: "Voltage OUT", value: "vout", unit: "V", precision: 0, format: "d" },
         { text: "Battery Voltage", value: "bat_v", unit: "V", precision: 1, format: ".2f" },
+        { text: "Voltage IN", value: "vin", unit: "V", precision: 1, format: "d" },
+        { text: "Voltage OUT", value: "vout", unit: "V", precision: 1, format: "d" },
+        { text: "CPU Temperature", value: "cpu_temp", unit: "°C", precision: 0, format: "d" },
       ]  
     },
 

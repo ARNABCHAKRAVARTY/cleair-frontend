@@ -1,6 +1,6 @@
 <template>
   <div class="corr-heat">
-    <v-card class="pa-1">
+    <v-card class="pa-1" min-width="300px">
       <v-card-title>{{measure.text}} &mdash; {{target.text}}</v-card-title>
       <v-card-subtitle>Correlation</v-card-subtitle>
       <v-card-text ref="box" class="pa-0">

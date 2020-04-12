@@ -1,12 +1,12 @@
 <template>
   <div class="chart-lines">
-    <v-card class="pa-1">
+    <v-card class="pa-1" min-width="300px">
       <v-row no-gutters>
-        <v-col cols="8">
+        <v-col cols="7">
           <v-card-title class="pt-1">{{measure.text}}</v-card-title>
           <v-card-subtitle>Time-Series</v-card-subtitle>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="5">
           <div class="text-right px-2 py-1">
             <span class="display-1 green--text">{{current | fix(measure.precision)}}</span> 
             <span class="title">&nbsp;{{measure.unit}}</span>

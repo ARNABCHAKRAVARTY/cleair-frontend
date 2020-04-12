@@ -19,6 +19,13 @@ export default new Vuex.Store({
         { text: "Humidity", value: "humidity", unit: "%" },
         { text: "PM 2.5", value: "pm25", unit: "μg/m³" },
         { text: "PM 10", value: "pm10", unit: "μg/m³" }
+      ],
+      
+      device_measures: [
+        { text: "CPU Temperature", value: "cpu_temp", unit: "°C" },
+        { text: "Voltage IN", value: "vin", unit: "V" },
+        { text: "Voltage OUT", value: "vout", unit: "V" },
+        { text: "Battery Voltage", value: "bat_v", unit: "V" },
       ]  
     },
 

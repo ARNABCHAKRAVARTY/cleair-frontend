@@ -2,13 +2,13 @@
   <div class="chart-lines">
     <v-card class="pa-1">
       <v-row no-gutters>
-        <v-col cols="6">
+        <v-col cols="8">
           <v-card-title class="pt-1">{{measure.text}}</v-card-title>
           <v-card-subtitle>Time-Series</v-card-subtitle>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="4">
           <div class="text-right px-2 py-1">
-            <span class="display-1 green--text">{{current | fix}}</span> 
+            <span class="display-1 green--text">{{current | fix(measure.precision)}}</span> 
             <span class="title">&nbsp;{{measure.unit}}</span>
           </div>
           <div class="text-right pr-2" style="margin-top:-0.8rem;">
@@ -57,10 +57,12 @@ export default {
       let ymin = this.ydata.map(y => (y > 0 ? y : +Infinity));
       let max = Math.max(...ymax);
       let min = Math.min(...ymin);
-      console.log("MIN-MAX: ", min, max);
 
-      if ((max - min) / min < 0.05) {
-        min = max / 1.05;
+      const fraction = (max - min) / min
+      if (fraction < 0.20) {
+        const display_fraction = 1 + 1.5*fraction
+        min = max / display_fraction;
+        console.log('MIN-MAX: ', min, max, fraction, display_fraction)
       } else {
         min = 0;
       }
@@ -161,8 +163,8 @@ export default {
   },
 
   filters: {
-    fix(number) {
-      return number.toFixed(0);
+    fix(number, digits) {
+      return number.toFixed(digits || 0);
     }
   },
 

@@ -266,7 +266,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
   .chart-choice button.v-item--active {
     background-color: rgba(128,192,128,0.8) !important;
   }

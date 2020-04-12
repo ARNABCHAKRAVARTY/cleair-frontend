@@ -2,13 +2,13 @@
   <div class="chart-dist">
     <v-card class="pa-1">
       <v-row no-gutters>
-        <v-col cols="6">
+        <v-col cols="8">
           <v-card-title class="pt-1">{{measure.text}}</v-card-title>
           <v-card-subtitle>Distribution</v-card-subtitle>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="4">
           <div class="text-right px-2 py-1">
-            <span class="display-1 green--text">{{mean | fix}}</span>
+            <span class="display-1 green--text">{{mean | fix(measure.precision)}}</span>
             <span class="title">&nbsp;{{measure.unit}}</span>
           </div>
           <div class="text-right pr-2" style="margin-top:-0.8rem;">
@@ -108,7 +108,7 @@ export default {
             title: `${this.measure.text} (${this.measure.unit})`,
             field: "bin_x",
             type: "quantitative",
-            axis: {format: "d"},
+            axis: {format: this.measure.format},
             bin: { binned: true }
           },
           x2: { field: "bin_x_end" },
@@ -151,8 +151,8 @@ export default {
   },
 
   filters: {
-    fix(number) {
-      return number.toFixed(0);
+    fix(number, digits) {
+      return number.toFixed(digits ||0);
     }
   },
 

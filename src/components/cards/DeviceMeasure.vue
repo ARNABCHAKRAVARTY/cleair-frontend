@@ -49,9 +49,9 @@
             <div class="blue--text" style="float:right; ">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <span v-on="on">{{ current[measure.value] | fix}}</span>
+                  <span v-on="on">{{ current[measure.value] | fix(measure.precision)}}</span>
                 </template>
-                <span>Max: {{ scale.max | fix}}, Min: {{ scale.min | fix}}</span>
+                <span>Max: {{ scale.max | fix(measure.precision)}}, Min: {{ scale.min | fix(measure.precision)}}</span>
               </v-tooltip>
             </div>
           </v-col>
@@ -173,8 +173,8 @@ export default {
   },
 
   filters: {
-    fix(number) {
-      return number.toFixed(0);
+    fix(number, digits) {
+      return number.toFixed(digits || 0);
     },
 
     from_now(date_time) {

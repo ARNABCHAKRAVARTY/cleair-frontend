@@ -1,29 +1,32 @@
 <template>
+  <v-container class="pa-0">
+    <v-tabs v-model="tab" grow>
+      <v-tab v-for="item in items" :key="item.key">{{ item.name }}</v-tab>
+    </v-tabs>
 
-    <v-content>
-      <v-container
-        class="fill-height"
-        fluid
-      >
-        <v-row
-          align="center"
-          justify="center"
-        >
-          <v-col class="text-center">
-           <span> <h1>CleAir : Pollution Control  </h1></span>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-content>
+    <v-tabs-items v-model="tab">
+      <v-tab-item v-for="item in items" :key="item.key">
+        <dashboard v-if="item.key == 'locations'"></dashboard>        
+      </v-tab-item>
+    </v-tabs-items>
+  </v-container>
 </template>
 
 <script>
-  export default {
-    props: {
-      source: String,
-    },
-    data: () => ({
-      drawer: null,
-    }),
-  }
+export default {
+  props: {
+    source: String
+  },
+  components: {
+    Dashboard: () => import("@/components/Dashboard")
+  },
+
+  data: () => ({
+    tab: 0,
+    items: [
+      {key: 'locations', name: 'Locations'}, 
+      {key: 'devices', name: 'Devices'}
+    ]
+  })
+};
 </script>

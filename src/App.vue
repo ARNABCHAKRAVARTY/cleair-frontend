@@ -74,6 +74,12 @@ export default {
     items: [
       { icon: "mdi-home", text: "Home", path: "/" },
       { icon: "mdi-account", text: "Sign In", path: "/SignIn" },
+      { icon: "mdi-chart-areaspline", text: "Current Devices", path: "/currentdevices" },
+      { icon: "mdi-chart-bar", text: "Current Locations", path: "/currentlocations" },
+    ],
+    items_all: [
+      { icon: "mdi-home", text: "Home", path: "/" },
+      { icon: "mdi-account", text: "Sign In", path: "/SignIn" },
       { icon: "mdi-google-maps", text: "Maps", path: "/maps" },
       { icon: "mdi-chart-areaspline", text: "Current Devices", path: "/currentdevices" },
       { icon: "mdi-chart-bar", text: "Current Locations", path: "/currentlocations" },

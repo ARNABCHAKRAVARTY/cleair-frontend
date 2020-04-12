@@ -12,7 +12,7 @@
 
         <v-row class="px-2 py-1">
           <v-col cols="6">
-            <v-btn-toggle active-class="btn-active" :value="items.show" multiple @change="update_items">
+            <v-btn-toggle class="chart-choice" :value="items.show" multiple @change="update_items">
               <v-btn>
                 <v-icon>mdi-chart-line</v-icon>
               </v-btn>
@@ -266,15 +266,18 @@ export default {
 };
 </script>
 
-<style scoped>
-  button.v-item--active {
+<style>
+  .chart-choice button.v-item--active {
     background-color: rgba(128,192,128,0.8) !important;
   }
 
-  i.mdi {
+  .chart-choice button {
+    background-color: rgba(230,255,250,0.6) !important;
+  }
+  .chart-choice i.mdi {
     color: rgb(96,128,96) !important;
   }
-  .v-item--active i.mdi {
+  .chart-choice .v-item--active i.mdi {
     color: rgb(230,255,250) !important;
   }
 </style>

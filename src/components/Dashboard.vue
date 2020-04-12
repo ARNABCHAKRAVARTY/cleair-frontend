@@ -3,10 +3,7 @@
     <template>
       <v-container class="py-0" fill-height>
         <v-row no-gutters align="center" justify="space-around">
-          <v-col cols="12" sm="8" class="pa-4">
-            <span class="headline">Locations</span>
-          </v-col>
-          <v-col cols="12" sm="4" class="pa-4">
+          <v-col cols="12" sm="4" offset-sm="8" class="pa-4">
             <v-select
               solo
               hide-details

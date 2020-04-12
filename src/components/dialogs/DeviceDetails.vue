@@ -4,7 +4,7 @@
       <v-container class="pa-0">
         <v-toolbar flat>
           <v-toolbar-title>{{ device_obj.device_name }}: {{ device_obj.location_name }}</v-toolbar-title>
-          <v-spacer></v-spacer>
+          <v-spacer> </v-spacer>
           <v-btn fab small icon color="accent" @click="close_dialog">
             <v-icon>mdi-close</v-icon>
           </v-btn>

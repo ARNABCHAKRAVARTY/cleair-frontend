@@ -63,6 +63,19 @@ export default new Vuex.Store({
   },
 
   mutations: {
+
+    SET_USER(state, user) {
+      state.user = user
+    },
+
+    SET_TOKEN(state, token) {
+      state.auth_token = token
+    },
+
+    CLEAR_USER(state) {
+      state.user = ''
+      state.auth_token = ''
+    },
     
     SET_FEEDBACK(state, payload) {
       state.feedback.kind = payload.kind
@@ -118,6 +131,11 @@ export default new Vuex.Store({
   },
 
   actions: {
+
+    call_clear_user({state, commit}) {
+      commit('clear_user')      
+    },
+
     socket_connect() {
       console.log('SOCKET CONNECTED')
     },
@@ -258,6 +276,15 @@ export default new Vuex.Store({
   getters: {
     is_logged_in(state) {
       return state.user ? true : false
+    },
+
+    auth_token(state, getters) {
+      if (getters.is_logged_in) {
+        return state.auth_token
+      }
+      else {
+        return null
+      }
     },
 
     prerequisites(state) {

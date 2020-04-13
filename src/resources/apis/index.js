@@ -24,6 +24,7 @@ const http_all = axios.create({
     baseURL: server_host
 })
 
+import auth from "./auth"
 import devices from "./devices"
 import locations from "./locations"
 import current from "./current"
@@ -31,4 +32,4 @@ import prerequisites from "./prerequisites"
 import mapping from "./mapping"
 import history from "./history"
 
-export { update_jwt, http_jwt, http_all, devices, locations, current, prerequisites, mapping , history}
+export { update_jwt, http_jwt, http_all, devices, locations, current, prerequisites, mapping , history, auth}

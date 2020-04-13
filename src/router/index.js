@@ -9,6 +9,7 @@ import Devices from '../components/Devices.vue'
 import Locations from '../components/Locations.vue'
 import SignIn from '../components/Signin.vue'
 import Dashboard from '../components/Dashboard.vue'
+import Maps from '../components/Maps.vue'
 import DeviceDashboard from '../components/DeviceDashboard.vue'
 
 
@@ -49,6 +50,11 @@ const routes = [
     path: '/devices',
     name: 'devices',
     component: Devices
+  },
+  {
+    path: '/maps',
+    name: 'maps',
+    component: Maps
   },
   {
     path: '/dashboard',

@@ -51,7 +51,7 @@ export default {
 
   data() {
     return {
-      selection: "cpu_temp"
+      selection: "bat_v"
     };
   },
 

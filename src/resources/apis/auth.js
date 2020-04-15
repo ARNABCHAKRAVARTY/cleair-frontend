@@ -1,5 +1,5 @@
 import { format_error } from "./utils"
-import { http_auth } from "."
+import { http_all } from "."
 
 let auth = {
     endpoint: '/user',
@@ -7,13 +7,13 @@ let auth = {
     login: function(item) {
         let url = this.endpoint + "/auth"
         return new Promise( (resolve, reject) => {
-            http_auth.post(url, item)
+            http_all.post(url, item)
                 .then(
                     response => resolve(response.data),
                     error => reject(format_error(error))
                 )
         })
     }
-}
+} 
 
 export default auth

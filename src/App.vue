@@ -8,7 +8,7 @@
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="title">{{ user.name }}</v-list-item-title>
-            <v-list-item-subtitle>TransArch Solutions</v-list-item-subtitle>
+            <v-list-item-subtitle>cleair.io</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
         <v-list-item avatar v-else>
@@ -71,15 +71,14 @@ export default {
   data: () => ({
     dialog: false,
     drawer: null,
-    items: [
+    items_guest: [
       { icon: "mdi-home", text: "Home", path: "/" },
       { icon: "mdi-account", text: "Sign In", path: "/SignIn" },
       { icon: "mdi-chart-areaspline", text: "Current Devices", path: "/currentdevices" },
       { icon: "mdi-chart-bar", text: "Current Locations", path: "/currentlocations" },
     ],
-    items_all: [
+    items_user: [
       { icon: "mdi-home", text: "Home", path: "/" },
-      { icon: "mdi-account", text: "Sign In", path: "/SignIn" },
       { icon: "mdi-google-maps", text: "Maps", path: "/maps" },
       { icon: "mdi-chart-areaspline", text: "Current Devices", path: "/currentdevices" },
       { icon: "mdi-chart-bar", text: "Current Locations", path: "/currentlocations" },
@@ -92,6 +91,14 @@ export default {
   }),
 
   computed: {
+    items() {
+      if (this.is_logged_in) {
+        return this.items_user
+      } else {
+        return this.items_guest
+      }
+    },
+
     appTitle() {
       if (this.is_logged_in) {
         if (this.is_admin) return this.$store.state.appTitle + ": Admin";

@@ -92,11 +92,12 @@ const moment = require('moment')
       }
 
       this.loading = true
+      console.log('APIs: ', apis)
       apis.auth.login(user_creds)
         .then(response => {
           //console.log(response)
-          this.$store.commit('set_user', response.user)
-          this.$store.commit('set_token', response.access_token)
+          this.$store.commit('SET_USER', response.user)
+          this.$store.commit('SET_TOKEN', response.access_token)
           let auth_token = this.$store.getters.auth_token
           apis.update_jwt(auth_token)
           let promise = Promise.resolve()                        
@@ -106,7 +107,10 @@ const moment = require('moment')
           this.error = error
           this.snackbar = true
         })
-        .finally(this.loading = false)
+        .finally(() => {
+          this.loading = false
+          this.$router.push('/')
+        })
     }
   },
 

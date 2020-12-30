@@ -14,7 +14,7 @@
     "node-sass": "^4.13.1",
     "register-service-worker": "^1.6.2",
     "socket.io-client": "^2.3.0",
-    "vega": "^5.10.0",
+    "vega": "^5.17.3",
     "vega-embed": "^6.5.2",
     "vega-lite": "^4.7.0",
     "vue": "^2.6.10",
